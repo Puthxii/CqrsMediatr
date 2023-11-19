@@ -2,5 +2,5 @@
 
 namespace CqrsMediatr.Commands
 {
-    public record AddProductCommand(Product Product) : IRequest<Unit>;
+    public record AddProductCommand(Product Product) : IRequest<Product>;
 }

@@ -24,12 +24,20 @@ namespace CqrsMediatr.Controllers
             return Ok(products);
         }
 
+        [HttpGet("{id:int}", Name = "GetProductById")]
+        public async Task<ActionResult> GetProductById(int id)
+        {
+            var products = await _sender.Send(new GetProductByIdQuery(id));
+
+            return Ok(products);
+        }
+
         [HttpPost]
         public async Task<ActionResult> AddProduct([FromBody] Product product)
         {
-            await _sender.Send(new AddProductCommand(product));
+            var productToReturn = await _sender.Send(new AddProductCommand(product));
 
-            return StatusCode(201);
+            return CreatedAtRoute("GetProductById", new { id = productToReturn.Id }, productToReturn);
         }
     }
 }
