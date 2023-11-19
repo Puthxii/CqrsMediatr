@@ -1,4 +1,5 @@
-﻿using CqrsMediatr.Queries;
+﻿using CqrsMediatr.Commands;
+using CqrsMediatr.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,14 @@ namespace CqrsMediatr.Controllers
             var products = await _sender.Send(new GetProductsQuery());
 
             return Ok(products);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddProduct([FromBody] Product product)
+        {
+            await _sender.Send(new AddProductCommand(product));
+
+            return StatusCode(201);
         }
     }
 }
