@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using CqrsMediatr.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CqrsMediatr.Controllers
@@ -12,6 +13,14 @@ namespace CqrsMediatr.Controllers
         public ProductsController(ISender sender)
         {
             _sender = sender;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetProducts()
+        {
+            var products = await _sender.Send(new GetProductsQuery());
+
+            return Ok(products);
         }
     }
 }
