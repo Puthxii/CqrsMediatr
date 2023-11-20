@@ -1,6 +1,7 @@
 using CqrsMediatr;
 using MediatR;
 using System.Net.NetworkInformation;
+using CqrsMediatr.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 builder.Services.AddSingleton<FakeDataStore>();
+
+builder.Services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
 builder.Services.AddControllers();
 

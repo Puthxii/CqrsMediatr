@@ -1,4 +1,5 @@
 ﻿using CqrsMediatr.Commands;
+using CqrsMediatr.Notifications;
 using CqrsMediatr.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace CqrsMediatr.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ISender _sender;
+        private readonly IPublisher _publisher;
 
-        public ProductsController(ISender sender)
+        public ProductsController(ISender sender, IPublisher publisher)
         {
             _sender = sender;
+            _publisher = publisher;
         }
 
         [HttpGet]
@@ -37,7 +40,10 @@ namespace CqrsMediatr.Controllers
         {
             var productToReturn = await _sender.Send(new AddProductCommand(product));
 
+            await _publisher.Publish(new ProductAddedNotification(productToReturn));
+
             return CreatedAtRoute("GetProductById", new { id = productToReturn.Id }, productToReturn);
         }
+
     }
 }
